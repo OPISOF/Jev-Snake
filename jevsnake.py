@@ -6,7 +6,7 @@ import pygame
 from typesafe_sdk import TypeSafeClient, Choice
 
 BLOCK = 20
-FPS = 100
+FPS = 40
 COMPAS = ["UP", "RIGHT", "DOWN", "LEFT"]
 
 screen_width, screen_height = 720, 480
@@ -14,7 +14,6 @@ screen_width, screen_height = 720, 480
 game_count = 0
 
 r, g, b = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-
 
 def reset(snake, direction, food, score, head_y, head_x, game_count):
     game_count += 1
@@ -203,6 +202,19 @@ def get_snake_STATE(head_x, head_y, food, snake):
 
     return state
 
+def get_statement(agent_state):
+    obj = {
+            "The danger on the left": agent_state[0],
+            "The danger on stright": agent_state[1],
+            "The danger on the right": agent_state[2],
+            "The food is to the left": agent_state[3],
+            "The food is to the right": agent_state[4],
+            "The food is in front of you": agent_state[5],
+            "The food is behind you": agent_state[6]
+            }
+    return obj
+
+
 # ===================================
 
 plt.ion()
@@ -258,7 +270,7 @@ while True:
                 )
 
     agent_state = get_snake_STATE(head_x, head_y, food, snake)
-    statement = agent_state
+    statement = get_statement(agent_state)
     head_direction = get_ai_direction(agent_state, statement)
 
     direction = interpretation_direction(direction, head_direction)
@@ -266,7 +278,6 @@ while True:
     gameover, food, score, direction, head_x, head_y = game_step(
         food, score, direction, head_x, head_y
     )
-    print("step")
 
     if pressed == True:
         get_frame(snake, food)
